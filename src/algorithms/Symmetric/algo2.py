@@ -1,6 +1,6 @@
 
 class Algo2:
-    def __init__(self, test_str):
+    def __init__(self, test_str : str):
         self.test_str = test_str
 
     def print(self):
