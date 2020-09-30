@@ -17,7 +17,7 @@ Available cryptographic algorithms for encryption and decryption.
 - ECC
 
 ## Installation
-###Requirements
+### Requirements
 - Python 3.7+
 - ```pip install -r requirements.txt```
 
