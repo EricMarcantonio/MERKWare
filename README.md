@@ -40,5 +40,5 @@ TODO
 ### Group Members
 - [Eric Marcantonio](https://github.com/EricMarcantonio)
 - [Moreka Kazemi](https://github.com/mowhamadrexa)
-- [Kevin Suh]()
+- [Kevin Suh](https://github.com/KevinSuh6433)
 - [Reuben Ninan](https://github.com/ReubenMathew)
