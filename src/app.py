@@ -2,6 +2,9 @@ import sys
 from os.path import isdir
 import argparse
 
+# A boolean that turns on/off debug mode.
+DEBUG = True
+
 # Sample algorithm module import
 # from algorithms.Asymmetric import algo1
 # from algorithms.Symmetric import algo2
@@ -19,14 +22,19 @@ import argparse
 # Make all of these required when modules are fully implemented
 args = argparse.ArgumentParser()
 
-args.add_argument("-f", "--folder", required=False, help="Folder that will be encrypted/decrypted")
-args.add_argument("-t", "--type", required=False, help="Algorithm type selection")
-args.add_argument("-s", "--secrets", required=False, help="An n-tuple input used for key secrets and other parameters")
-args.add_argument("-a", "--action", required=False, help="Encrypt or decrypt folder")
+# Forcing the user to enter all the parameters in production mode
+# Skipping this in debug mode
+parameter_required = False if DEBUG else True
+
+args.add_argument("-f", "--folder", required=parameter_required, help="Folder that will be encrypted/decrypted")
+args.add_argument("-t", "--type", required=parameter_required, help="Algorithm type selection")
+args.add_argument("-s", "--secrets", required=parameter_required, help="An n-tuple input used for key secrets and other parameters")
+args.add_argument("-a", "--action", required=parameter_required, help="Encrypt or decrypt folder")
 
 args_dict = vars(args.parse_args())
 
 print('COMMAND LINE ARGUMENTS: ', args_dict)
+print(list(args_dict.values()))
 
 # is the folder accessible?
 folder_exists = isdir(args_dict['folder'])
