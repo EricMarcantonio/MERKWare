@@ -16,10 +16,10 @@ with open("./test_files/pic.txt", "rb") as f:
         AES uses a 4x4 matrix. This fills it in. I purposly did not use a for loop because
         it is easier to understand how this works, without figuring out the loop logic.
         '''
-        block[0] = [hex_byte[0:2], hex_byte[2:4], hex_byte[4:6], hex_byte[6:8]]
-        block[1] = [hex_byte[8:10], hex_byte[10:12], hex_byte[12:14], hex_byte[14:16]]
-        block[2] = [hex_byte[16:18], hex_byte[18:20], hex_byte[20:22], hex_byte[22:24]]
-        block[3] = [hex_byte[24:26], hex_byte[26:28], hex_byte[28:30], hex_byte[30:32]]
+        block[0] = [hex_byte[0:2], hex_byte[8:10], hex_byte[16:18], hex_byte[24:26]]
+        block[1] = [hex_byte[2:4], hex_byte[10:12], hex_byte[18:20], hex_byte[26:28]]
+        block[2] = [hex_byte[4:6], hex_byte[12:14], hex_byte[20:22], hex_byte[28:30]]
+        block[3] = [hex_byte[6:8], hex_byte[14:16], hex_byte[22:24], hex_byte[30:32]]
 
         #in case the file is less then 16 bytes (i.e a text file that has like 1 word)
         for i in range(0,4):
