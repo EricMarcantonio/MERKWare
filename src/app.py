@@ -2,23 +2,10 @@ import sys
 from os.path import isdir
 import argparse
 import shutil
-from algorithms.Symmetric.aes import AES
+from algorithms.aes import AES
 
 # A boolean that turns on/off debug mode.
 DEBUG = True
-
-# Sample algorithm module import
-# from algorithms.Asymmetric import algo1
-# from algorithms.Symmetric import algo2
-# from algorithms.Symmetric import aes
-
-# a = aes.AES()
-# a1 = algo1.Algo1('Init String 1')
-# a2 = algo2.Algo2('Init String 2')
-
-# a1.print()
-# a2.print()
-
 
 # ARGUMENT PARSER
 # Make all of these required when modules are fully implemented
@@ -41,9 +28,11 @@ print(list(args_dict.values()))
 
 # is the folder accessible?
 if isdir(args_dict['folder']):
+    # AES Encrypt and zip (NEED TO REMOVE AND REPLACE WITH ALGO MULTIPLEXER)
     zipped = shutil.make_archive("test", "zip", args_dict['folder'])
     AES(zipped)
     shutil.unpack_archive("test.zip", "./", None)
 else:
     print("NOT A DIR OR FILE")
+
 print("Exiting...")
