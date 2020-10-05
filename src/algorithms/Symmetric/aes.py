@@ -43,14 +43,19 @@ class AES(str):
     def __init__(self, file_name: str):
         super().__init__()
         self.file_name = file_name
+        print(self.file_name)
         self.file_read = open(file_name, "rb")
-        self.file_write = open(file_name, "wb")
+        # self.file_write = open(file_name, "wb")
+        self.main()
 
     def main(self):
+
         byte = self.file_read.read(16)
         while byte:
-            four_by_four = []
+            four_by_four = [[], [], [], []]
             hex_byte = byte.hex()
+            print("HEX BYTE IS:", hex_byte)
+            print(hex_byte[30:32])
             four_by_four[0] = [hex_byte[0:2], hex_byte[8:10], hex_byte[16:18], hex_byte[24:26]]
             four_by_four[1] = [hex_byte[2:4], hex_byte[10:12], hex_byte[18:20], hex_byte[26:28]]
             four_by_four[2] = [hex_byte[4:6], hex_byte[12:14], hex_byte[20:22], hex_byte[28:30]]
@@ -61,3 +66,4 @@ class AES(str):
                     if four_by_four[i][j] == "":
                         four_by_four[i][j] = "00"
             byte = self.file_read.read(16)
+            print(four_by_four)
