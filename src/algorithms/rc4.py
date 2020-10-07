@@ -63,12 +63,15 @@ class RC4:
         # return [x ^ y for x, y in zip(self.keystream, list(bytes(cipher.encode())))]
         return [x ^ int(bytes(y.encode())) for x, y in zip(self.keystream, list(cipher))]
 
-rc4 = RC4(key=31415, length=8)
-cipher = rc4.encrypt(['6', '1', '5', '4'])
-cipher = list(map(str, cipher))
-print('cipher', cipher)
 
-print('-----------')
+# Testing purposes
+if __name__ == "__main__":
+    rc4 = RC4(key=31415, length=8)
+    cipher = rc4.encrypt(['6', '1', '5', '4'])
+    cipher = list(map(str, cipher))
+    print('cipher', cipher)
 
-text = rc4.decrypt(cipher)
-print('text', text)
+    print('-----------')
+
+    text = rc4.decrypt(cipher)
+    print('text', text)
