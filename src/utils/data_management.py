@@ -90,6 +90,10 @@ The idea is to zip a folder and then open that folder as a file.
 to this
 5. Delete the old zip file, after encrpting it
 
-Note: you can open a stream to the zip file by using File.read_file()
+Note: you can open a stream to the zip file by using File.read_file() You can edit the .merk file by getting the stream from File.encrypted_file_stream()
+
+At the moment this overwrites the testing folder so use the methods to not have to make a folder manually everytime. 
+I have tested it so that it can zip a file and then open a stream to encrypt it. There is 0 encryption is this file, and it should stay like that.
+the .merk allows you to write to a new file. Decrypt the file first and remove the .merk before feeding it into something.
 
 '''
