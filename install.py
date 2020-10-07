@@ -1,16 +1,15 @@
 import os
+import PyInstaller.__main__
 
-os.system("pyinstaller -n MERK --onefile src/app.py")
+package_name = 'MERK'
 
-# Todo: Switch to pyinstaller class
-# import PyInstaller.__main__
+PyInstaller.__main__.run([
+    '--log-level=DEBUG',
+    '--name=%s' % package_name,
+    '--onefile',
+    '--clean',
+    '--icon=%s' % os.path.join('resources', 'icon.ico'),
+    os.path.join('src', 'app.py'),
+])
 
-# PyInstaller.__main__.run([
-#     '--name=%s' % package_name,
-#     '--onefile',
-#     '--windowed',
-#     '--add-binary=%s' % os.path.join('resource', 'path', '*.png'),
-#     '--add-data=%s' % os.path.join('resource', 'path', '*.txt'),
-#     '--icon=%s' % os.path.join('resource', 'path', 'icon.ico'),
-#     os.path.join('my_package', '__main__.py'),
-# ])
+# os.system("pyinstaller -n MERK --onefile src/app.py")
