@@ -9,9 +9,11 @@ class File:
     file_read_stream = None
     file_write_encrypted = None
     file_write_decrypted = None
+    starting_dir = None
 
     def __init__(self, file_name: str):
         if os.path.isfile(file_name):
+            self.starting_dir = os.getcwd()
             self.file_path_raw = os.path.abspath(file_name)
             self.file_name = self.file_path_raw[self.file_path_raw.rfind("/") + 1: len(self.file_path_raw)]
             self.parent_folder = self.file_path_raw[0:self.file_path_raw.rfind("/")]
@@ -22,9 +24,6 @@ class File:
         self.file_read_stream = open(self.file_path_raw, "rb")
         return self.file_read_stream
 
-    def read_file_close(self):
-        self.file_read_stream.close()
-
     def encrypted_file_stream(self):
         self.file_write_encrypted = open(self.file_path_raw + '.merk', "wb")
         return self.file_write_encrypted
@@ -33,15 +32,12 @@ class File:
         self.file_write_decrypted = open(self.file_path_raw[0:self.file_path_raw.rfind(".")], "wb")
         return self.file_write_decrypted
 
-    def close_encrypted_file_stream(self):
-        self.file_write_encrypted.close()
-
-    def close_all_streams(self):
-        self.file_read_stream.close()
-        self.file_write_encrypted.close()
-
     def delete(self):
         os.remove(self.file_path_raw)
+
+    def unzip_folder(self):
+        os.chdir(self.parent_folder)
+        shutil.unpack_archive(filename=self.file_name)
 
 
 class Folder:

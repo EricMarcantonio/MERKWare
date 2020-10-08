@@ -38,3 +38,5 @@ class XOR:
         key_bytes = bytes(self.key, encoding='ascii')
         self.new_file.write(xor_bytes(total_bytes, key_bytes))
         self.file.delete()
+        name_wo_merk = self.file.file_name[0:self.file.file_name.rfind(".")]
+        # if name_wo_merk.endswith("zip"):
