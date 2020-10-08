@@ -1,5 +1,6 @@
-from src.utils.data_management import File, Folder
 import os
+
+from src.utils.data_management import File, Folder
 
 
 def xor_bytes(w, x):
@@ -37,7 +38,3 @@ class XOR:
         key_bytes = bytes(self.key, encoding='ascii')
         self.new_file.write(xor_bytes(total_bytes, key_bytes))
         self.file.delete()
-
-
-lol = XOR("../../spec/test_files/secrets.txt.merk", "eric")
-lol.crypt()
