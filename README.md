@@ -17,11 +17,17 @@ Available cryptographic algorithms for encryption and decryption.
 - ECC
 
 ## Installation
+### Requirements
+- Python 3.7+
+- ```pip install -r requirements.txt```
+
 ### Releases
 TODO
-### Build from source
-TODO
 
+### Build from source
+1. Install requirements
+2. Run ```python install.py```
+3. Navigate to */dist* to find *MERK* 
 
 ## Usage
 ### Command-line Flags
@@ -34,5 +40,5 @@ TODO
 ### Group Members
 - [Eric Marcantonio](https://github.com/EricMarcantonio)
 - [Moreka Kazemi](https://github.com/mowhamadrexa)
-- [Kevin Suh]()
+- [Kevin Suh](https://github.com/KevinSuh6433)
 - [Reuben Ninan](https://github.com/ReubenMathew)
