@@ -10,6 +10,8 @@ class File:
     file_write_encrypted = None
     file_write_decrypted = None
     starting_dir = None
+    decrypted_file_name = None
+    encrypted_file_name = None
 
     def __init__(self, file_name: str):
         if os.path.isfile(file_name):
@@ -25,10 +27,12 @@ class File:
         return self.file_read_stream
 
     def encrypted_file_stream(self):
+        self.encrypted_file_name = self.file_path_raw + '.merk'
         self.file_write_encrypted = open(self.file_path_raw + '.merk', "wb")
         return self.file_write_encrypted
 
     def decrypted_file_stream(self):
+        self.decrypted_file_name = self.file_path_raw[0:self.file_path_raw.rfind(".")]
         self.file_write_decrypted = open(self.file_path_raw[0:self.file_path_raw.rfind(".")], "wb")
         return self.file_write_decrypted
 
@@ -72,15 +76,15 @@ class Folder:
         shutil.unpack_archive(filename=self.folder_name)
 
 
-# --------------TESTING-------------------
-folder = Folder("../../spec/test_files")
-folder.zip_folder()
-folder.delete()
-
-folder = File("../../spec/test_files.zip")
-# There are just tests below
-folder.encrypted_file_stream()
-folder.delete()
+# # --------------TESTING-------------------
+# folder = Folder("../../spec/test_files")
+# folder.zip_folder()
+# folder.delete()
+#
+# folder = File("../../spec/test_files.zip")
+# # There are just tests below
+# folder.encrypted_file_stream()
+# folder.delete()
 
 '''
 The idea is to zip a folder and then open that folder as a file.

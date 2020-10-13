@@ -1,10 +1,9 @@
-from src.utils.data_management import Folder, File
 import os
 
-'''
-Helper functions that don't need to be loaded (or compiled) in each init of AES()
-Works mostly in place
-'''
+from src.utils.data_management import Folder, File
+
+encoding: str = "utf-8"
+
 s_box = (
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
     0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
@@ -56,6 +55,39 @@ def inv_sub_bytes(sub):
             sub[i][j] = inverted_s_box[sub[i][j]]
 
 
+def matrix_to_bytes(matrix):
+    """ Converts a 4x4 matrix into a 16-byte array.  """
+    return bytes(sum(matrix, []))
+
+
+def create_matrix(plain_text_in_bytes: list, matrix):
+    """
+    :param plain_text_in_bytes: 16 byte array
+    :param matrix: resulting matrix. We do everything in place, cleaner code
+    """
+    # There is most likely better way but I suck at math
+    '''
+    Column Major (MATH-1025)
+    [
+        b0, b4, b8, b12,
+        b1, b5, b9, b13,
+        b2, b6, b10, b14,
+        b3, b7, b11, b15,
+    ]
+
+    
+    '''
+
+    matrix[0] = [plain_text_in_bytes[0], plain_text_in_bytes[4], plain_text_in_bytes[8],
+                 plain_text_in_bytes[12]]
+    matrix[1] = [plain_text_in_bytes[1], plain_text_in_bytes[5], plain_text_in_bytes[9],
+                 plain_text_in_bytes[13]]
+    matrix[2] = [plain_text_in_bytes[2], plain_text_in_bytes[6], plain_text_in_bytes[10],
+                 plain_text_in_bytes[14]]
+    matrix[3] = [plain_text_in_bytes[3], plain_text_in_bytes[7], plain_text_in_bytes[11],
+                 plain_text_in_bytes[15]]
+
+
 def shift_rows(sub):
     sub[0][1], sub[1][1], sub[2][1], sub[3][1] = sub[1][1], sub[2][1], sub[3][1], sub[0][1]
     sub[0][2], sub[1][2], sub[2][2], sub[3][2] = sub[2][2], sub[3][2], sub[0][2], sub[1][2]
@@ -68,42 +100,106 @@ def inverted_shift_rows(sub):
     sub[0][3], sub[1][3], sub[2][3], sub[3][3] = sub[1][3], sub[2][3], sub[3][3], sub[0][3]
 
 
-def add_round_key(sub, key):
+def add_round_key(sub: list, key: list):
     for i in range(4):
         for j in range(4):
             sub[i][j] ^= key[i][j]
 
 
-def xor_bytes(a, b):
+def xor_bytes(a: bytes, b: bytes):
     return bytes(i ^ j for i, j in zip(a, b))
 
 
-class AES(str):
-    file = None
+key_lengths = {
+    16: 10,
+    24: 12,
+    32: 14,
+}
 
-    def __init__(self, filename):
+
+def fix_byte_80(byte):
+    if byte & 0x80:
+        return ((byte << 1) ^ 0x1B) & 0xFF
+    else:
+        return byte << 1
+
+
+def mix_single_column(state: list):
+    a = state[0] ^ state[1] ^ state[2] ^ state[3]
+    b = state[0]
+    state[0] ^= a ^ fix_byte_80(state[0] ^ state[1])
+    state[1] ^= a ^ fix_byte_80(state[1] ^ state[2])
+    state[2] ^= a ^ fix_byte_80(state[2] ^ state[3])
+    state[3] ^= a ^ fix_byte_80(state[3] ^ b)
+
+
+def mix_columns(state: list):
+    for i in range(4):
+        mix_single_column(state[i])
+
+
+def invert_mix_columns(state: list):
+    # see Sec 4.1.3 in The Design of Rijndael
+    for i in range(4):
+        a = fix_byte_80(fix_byte_80(state[i][0] ^ state[i][2]))
+        b = fix_byte_80(fix_byte_80(state[i][1] ^ state[i][3]))
+        state[i][0] ^= a
+        state[i][1] ^= b
+        state[i][2] ^= a
+        state[i][3] ^= b
+
+    mix_columns(state)
+
+
+def expand_key(key: bytes):
+    print(key)
+
+
+class AES:
+    file = None
+    num_of_rounds = None
+    key: str = None
+    key_matrix: list = None
+
+    def __init__(self, filename: str, key: str):
         super().__init__()
+        # Set the key
+        self.key = key
+        # Expand and convert the key into bytes and make and set a byte array
+        expand_key(bytes(key, encoding))
+        # See if the file exists, and set fields
         if os.path.exists(filename):
             if os.path.isdir(filename):
-                self.file = Folder(filename).zip_folder()
-                self.file = File(self.file.folder_name).read_file()
+                self.file = Folder(filename)
+                self.file = File(self.file.folder_name)
             elif os.path.isfile(filename):
-                self.file = File(filename).read_file()
+                self.file = File(filename)
             else:
                 raise FileExistsError
+
         else:
             raise FileNotFoundError
 
-    def main(self):
-        f = open("../../spec/test_files/lol.txt", "rb")
-        fi = f.read(16)
-        bytes_16 = self.file.read(16)
-        print(xor_bytes(bytes_16, fi))
+    def encrypt(self):
 
-        # four_by_four[0] = [hex_byte[0:2], hex_byte[8:10], hex_byte[16:18], hex_byte[24:26]]
-        # four_by_four[1] = [hex_byte[2:4], hex_byte[10:12], hex_byte[18:20], hex_byte[26:28]]
-        # four_by_four[2] = [hex_byte[4:6], hex_byte[12:14], hex_byte[20:22], hex_byte[28:30]]
-        # four_by_four[3] = [hex_byte[6:8], hex_byte[14:16], hex_byte[22:24], hex_byte[30:32]]
+        file_bytes = self.file.read_file().read(16)
+        while file_bytes:
+            state = [[0], [0], [0], [0]]
+            create_matrix(file_bytes, state)
+            assert self.key_matrix is not None
+            add_round_key(state, self.key_matrix)
+            for _ in range(0, self.num_of_rounds - 1):
+                sub_bytes(state)
+                shift_rows(state)
+                mix_columns(state)
+                add_round_key(state, self.key_matrix)
+            sub_bytes(state)
+            shift_rows(state)
+            add_round_key(state)
+            # Write new bytes to file
+            self.file.encrypted_file_stream().write(matrix_to_bytes(state))
+            # Read the next 16 bytes
+            file_bytes = self.file.read_file().read(16)
 
 
-AES("../../spec/test_files/secrets.txt").main()
+file = AES("../../spec/test_files/secrets.txt", "eric")
