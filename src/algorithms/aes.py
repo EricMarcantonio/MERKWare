@@ -299,9 +299,24 @@ class AES:
         sub_bytes(state)
         shift_rows(state)
         state = [xor_bytes(state[-1], keys_ready_to_be_xored[9]) for x in range(0, 4)]
-        return state
+        return from_matrix_to_bytearray(state)
 
-# file_array_bytes = bytearray("Two One Nine Two", encoding="utf-8")
-#
-# file = AES(file_array_bytes, "Thats my Kung Fu")
-# file.encrypt()
+    def decrypt(self):
+        state = self.key_matrix
+        # 0 XOR THE BYTES
+        keys_ready_to_be_xored = [self.key_byte_array]
+
+        for x in range(0, 9):
+            keys_ready_to_be_xored.append(from_matrix_to_bytearray(self.expand_128_key(keys_ready_to_be_xored[x])))
+
+        state = [xor_bytes(state[3 - x], keys_ready_to_be_xored[-1]) for x in range(0, 4)]
+        print_matrix(state)
+
+
+file_array_bytes = bytearray("Two One Nine Two", encoding="utf-8")
+
+file = AES(file_array_bytes, "Thats my Kung Fu")
+
+lol = file.encrypt()
+new_aes = AES(lol, "Thats my Kung Fu")
+new_aes.decrypt()

@@ -1,3 +1,4 @@
+Crypto
 altgraph==0.17
 future==0.18.2
 pefile==2019.4.18
