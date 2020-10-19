@@ -1,8 +1,8 @@
 import sys
-from os.path import isdir
+from os.path import isdir, join, abspath
 import argparse
 import shutil
-from algorithms.aes import AES
+from os import walk, getcwd
 
 # A boolean that turns on/off debug mode.
 DEBUG = True
@@ -23,16 +23,17 @@ args.add_argument("-a", "--action", required=parameter_required, help="Encrypt o
 
 args_dict = vars(args.parse_args())
 
-print('COMMAND LINE ARGUMENTS: ', args_dict)
-print(list(args_dict.values()))
+curr_dir = getcwd()
+folder_path = abspath(args_dict['folder'])
 
-# is the folder accessible?
-if isdir(args_dict['folder']):
-    # AES Encrypt and zip (NEED TO REMOVE AND REPLACE WITH ALGO MULTIPLEXER)
-    zipped = shutil.make_archive("test", "zip", args_dict['folder'])
-    AES(zipped)
-    shutil.unpack_archive("test.zip", "./", None)
-else:
-    print("NOT A DIR OR FILE")
+from utils.file_utils import zip_folder, delete_folder, read_file
 
-print("Exiting...")
+oldFolder, newZip = (zip_folder(folder_path))
+delete_folder(oldFolder)
+fileBytes = read_file(newZip)
+
+print(fileBytes)
+
+
+
+

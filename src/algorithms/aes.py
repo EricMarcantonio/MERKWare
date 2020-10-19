@@ -313,10 +313,10 @@ class AES:
         print_matrix(state)
 
 
-file_array_bytes = bytearray("Two One Nine Two", encoding="utf-8")
+# file_array_bytes = bytearray("Two One Nine Two", encoding="utf-8")
 
-file = AES(file_array_bytes, "Thats my Kung Fu")
+# file = AES(file_array_bytes, "Thats my Kung Fu")
 
-lol = file.encrypt()
-new_aes = AES(lol, "Thats my Kung Fu")
-new_aes.decrypt()
+# lol = file.encrypt()
+# new_aes = AES(lol, "Thats my Kung Fu")
+# new_aes.decrypt()
