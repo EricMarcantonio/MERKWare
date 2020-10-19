@@ -1,7 +1,3 @@
-import os
-
-from src.utils.data_management import Folder, File
-
 encoding: str = "utf-8"
 
 s_box = (
@@ -43,57 +39,6 @@ inverted_s_box = (
 )
 
 
-def sub_bytes(sub):
-    for i in range(4):
-        for j in range(4):
-            sub[i][j] = s_box[sub[i][j]]
-
-
-def inv_sub_bytes(sub):
-    for i in range(4):
-        for j in range(4):
-            sub[i][j] = inverted_s_box[sub[i][j]]
-
-
-def matrix_to_bytes(matrix):
-    """ Converts a 4x4 matrix into a 16-byte array.  """
-    return bytes(sum(matrix, []))
-
-
-def create_matrix(plain_text_in_bytes: list, matrix):
-    """
-    :param plain_text_in_bytes: 16 byte array
-    :param matrix: resulting matrix. We do everything in place, cleaner code
-    """
-    # There is most likely better way but I suck at math
-    '''
-    Column Major (MATH-1025)
-    [
-        b0, b4, b8, b12,
-        b1, b5, b9, b13,
-        b2, b6, b10, b14,
-        b3, b7, b11, b15,
-    ]
-
-    
-    '''
-
-    matrix[0] = [plain_text_in_bytes[0], plain_text_in_bytes[4], plain_text_in_bytes[8],
-                 plain_text_in_bytes[12]]
-    matrix[1] = [plain_text_in_bytes[1], plain_text_in_bytes[5], plain_text_in_bytes[9],
-                 plain_text_in_bytes[13]]
-    matrix[2] = [plain_text_in_bytes[2], plain_text_in_bytes[6], plain_text_in_bytes[10],
-                 plain_text_in_bytes[14]]
-    matrix[3] = [plain_text_in_bytes[3], plain_text_in_bytes[7], plain_text_in_bytes[11],
-                 plain_text_in_bytes[15]]
-
-
-def shift_rows(sub):
-    sub[0][1], sub[1][1], sub[2][1], sub[3][1] = sub[1][1], sub[2][1], sub[3][1], sub[0][1]
-    sub[0][2], sub[1][2], sub[2][2], sub[3][2] = sub[2][2], sub[3][2], sub[0][2], sub[1][2]
-    sub[0][3], sub[1][3], sub[2][3], sub[3][3] = sub[3][3], sub[0][3], sub[1][3], sub[2][3]
-
-
 def inverted_shift_rows(sub):
     sub[0][1], sub[1][1], sub[2][1], sub[3][1] = sub[3][1], sub[0][1], sub[1][1], sub[2][1]
     sub[0][2], sub[1][2], sub[2][2], sub[3][2] = sub[2][2], sub[3][2], sub[0][2], sub[1][2]
@@ -106,8 +51,8 @@ def add_round_key(sub: list, key: list):
             sub[i][j] ^= key[i][j]
 
 
-def xor_bytes(a: bytes, b: bytes):
-    return bytes(i ^ j for i, j in zip(a, b))
+def xor_bytes(a: bytearray, b: bytearray):
+    return bytearray(i ^ j for i, j in zip(a, b))
 
 
 key_lengths = {
@@ -139,7 +84,6 @@ def mix_columns(state: list):
 
 
 def invert_mix_columns(state: list):
-    # see Sec 4.1.3 in The Design of Rijndael
     for i in range(4):
         a = fix_byte_80(fix_byte_80(state[i][0] ^ state[i][2]))
         b = fix_byte_80(fix_byte_80(state[i][1] ^ state[i][3]))
@@ -151,55 +95,228 @@ def invert_mix_columns(state: list):
     mix_columns(state)
 
 
-def expand_key(key: bytes):
-    print(key)
+def create_matrix(plain_text_in_bytes: bytearray):
+    """
+    :param plain_text_in_bytes: 16 byte array
+    """
+    # There is most likely better way but I suck at math
+    '''
+    Column Major (MATH-1025)
+    [
+        b0, b4, b8, b12,
+        b1, b5, b9, b13,
+        b2, b6, b10, b14,
+        b3, b7, b11, b15,
+    ]
+
+    '''
+    matrix = [bytearray() for _ in range(0, 4)]
+
+    matrix[0] = bytearray([plain_text_in_bytes[0], plain_text_in_bytes[4], plain_text_in_bytes[8],
+                           plain_text_in_bytes[12]])
+    matrix[1] = bytearray([plain_text_in_bytes[1], plain_text_in_bytes[5], plain_text_in_bytes[9],
+                           plain_text_in_bytes[13]])
+    matrix[2] = bytearray([plain_text_in_bytes[2], plain_text_in_bytes[6], plain_text_in_bytes[10],
+                           plain_text_in_bytes[14]])
+    matrix[3] = bytearray([plain_text_in_bytes[3], plain_text_in_bytes[7], plain_text_in_bytes[11],
+                           plain_text_in_bytes[15]])
+    return matrix
+
+
+round_constant = (
+    0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x80, 0x1b, 0x36
+)
+
+hex_conversion = {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
+    "a": 10,
+    "b": 11,
+    "c": 12,
+    "d": 13,
+    "e": 14,
+    "f": 15
+}
+
+
+def new_sub(byte):
+    # print(str(bytes(chr(byte), encoding=encoding).hex()))
+    b0 = bytes([byte]).hex()[0]
+    b1 = bytes([byte]).hex()[1]
+
+    return int(hex(s_box[hex_conversion[b0] * 16 + hex_conversion[b1]]), base=16)
+
+
+def gmul(a: int, b: int):
+    p = 0
+    while a and b:
+        if b % 2 == 1:
+            p ^= a
+        if a >= 128:
+            a = (a << 1) ^ 0x11b
+        else:
+            a <<= 1
+        b >>= 1
+
+    return p
+
+
+def print_matrix(matrix: list):
+    print("___________")
+    for eachLine in matrix:
+        for x in range(0, 8, 2):
+            print(eachLine.hex().upper()[x: x + 2], end=" ")
+        print()
+
+
+def flippy(state: list):
+    return [
+        bytearray([
+            state[0][0], state[1][0], state[2][0], state[3][0]
+        ]),
+        bytearray([
+            state[0][1], state[1][1], state[2][1], state[3][1]
+        ]),
+        bytearray([
+            state[0][2], state[1][2], state[2][2], state[3][2]
+        ]),
+        bytearray([
+            state[0][3], state[1][3], state[2][3], state[3][3]
+        ])
+    ]
+
+
+def from_matrix_to_bytearray(matrix: list) -> bytearray:
+    lol = bytearray()
+    for i in range(0, 4):
+        for j in range(0, 4):
+            lol.append(matrix[i][j])
+    return lol
+
+
+def printf(text: str):
+    for x in range(0, len(text), 2):
+        print(text[x: x + 2].upper(), end=" ")
+    print()
+
+
+def sub_bytes(state):
+    for x in range(0, 4):
+        state[x] = bytearray(new_sub(w) for w in state[x])
+
+
+def shift_rows(state):
+    state[1] = bytearray([state[1][1], state[1][2], state[1][3], state[1][0]])
+    state[2] = bytearray([state[2][2], state[2][3], state[2][0], state[2][1]])
+    state[3] = bytearray([state[3][3], state[3][0], state[3][1], state[3][2]])
 
 
 class AES:
-    file = None
-    num_of_rounds = None
-    key: str = None
+    byte_array: list = None
+    key_byte_array: bytearray = None
     key_matrix: list = None
+    rcon_step = 0
 
-    def __init__(self, filename: str, key: str):
+    def __init__(self, byte_array: bytearray, secret_key: str):
         super().__init__()
-        # Set the key
-        self.key = key
-        # Expand and convert the key into bytes and make and set a byte array
-        expand_key(bytes(key, encoding))
-        # See if the file exists, and set fields
-        if os.path.exists(filename):
-            if os.path.isdir(filename):
-                self.file = Folder(filename)
-                self.file = File(self.file.folder_name)
-            elif os.path.isfile(filename):
-                self.file = File(filename)
-            else:
-                raise FileExistsError
+        self.byte_array = create_matrix(byte_array)
+        self.key_byte_array = bytearray(secret_key, encoding=encoding)
+        self.key_matrix = create_matrix(self.key_byte_array)
 
-        else:
-            raise FileNotFoundError
+    def g(self, matrix_4: bytearray):
+
+        matrix_4.append(matrix_4.pop(0))
+
+        for x in range(0, 4):
+            matrix_4[x] = new_sub(matrix_4[x])
+
+        matrix_4[0] ^= round_constant[self.rcon_step]
+
+        self.rcon_step += 1
+        return matrix_4
+
+    def expand_128_key(self, key: bytearray):
+
+        k = [bytearray() for _ in range(0, 8)]
+        k[0] = key[0:4]
+        k[1] = key[4:8]
+        k[2] = key[8:12]
+        k[3] = key[12:16]
+        k[4] = xor_bytes(k[0], self.g(key[12:16]))
+        k[5] = xor_bytes(k[4], k[1])
+        k[6] = xor_bytes(k[5], k[2])
+        k[7] = xor_bytes(k[6], k[3])
+
+        return k[4::]
 
     def encrypt(self):
+        """
+        :return: returns a byte array of the encrypted bytes
+        """
+        state = self.key_matrix
+        # 0 XOR THE BYTES
+        keys_ready_to_be_xored = [self.key_byte_array]
 
-        file_bytes = self.file.read_file().read(16)
-        while file_bytes:
-            state = [[0], [0], [0], [0]]
-            create_matrix(file_bytes, state)
-            assert self.key_matrix is not None
-            add_round_key(state, self.key_matrix)
-            for _ in range(0, self.num_of_rounds - 1):
-                sub_bytes(state)
-                shift_rows(state)
-                mix_columns(state)
-                add_round_key(state, self.key_matrix)
+        for x in range(0, 9):
+            keys_ready_to_be_xored.append(from_matrix_to_bytearray(self.expand_128_key(keys_ready_to_be_xored[x])))
+
+        '''
+        • Round 0: 54 68 61 74 73 20 6D 79 20 4B 75 6E 67 20 46 75
+        • Round 1: E2 32 FC F1 91 12 91 88 B1 59 E4 E6 D6 79 A2 93
+        • Round 2: 56 08 20 07 C7 1A B1 8F 76 43 55 69 A0 3A F7 FA
+        • Round 3: D2 60 0D E7 15 7A BC 68 63 39 E9 01 C3 03 1E FB
+        • Round 4: A1 12 02 C9 B4 68 BE A1 D7 51 57 A0 14 52 49 5B
+        • Round 5: B1 29 3B 33 05 41 85 92 D2 10 D2 32 C6 42 9B 69
+        
+        
+        • Round 6: BD 3D C2 B7 B8 7C 47 15 6A 6C 95 27 AC 2E 0E 4E
+        • Round 7: CC 96 ED 16 74 EA AA 03 1E 86 3F 24 B2 A8 31 6A
+        • Round 8: 8E 51 EF 21 FA BB 45 22 E4 3D 7A 06 56 95 4B 6C
+        • Round 9: BF E2 BF 90 45 59 FA B2 A1 64 80 B4 F7 F1 CB D8
+        • Round 10: 28 FD DE F8 6D A4 24 4A CC C0 A4 FE 3B 31 6F 26
+
+        '''
+
+        # # 1
+        state = [xor_bytes(state[x], keys_ready_to_be_xored[0]) for x in range(0, 4)]
+
+        for x in range(1, 9):
             sub_bytes(state)
             shift_rows(state)
-            add_round_key(state)
-            # Write new bytes to file
-            self.file.encrypted_file_stream().write(matrix_to_bytes(state))
-            # Read the next 16 bytes
-            file_bytes = self.file.read_file().read(16)
+            state = flippy(state)
+            mix_columns(state)
+            state = flippy(state)
+            state = [xor_bytes(state[x], keys_ready_to_be_xored[x]) for x in range(0, 4)]
+
+        sub_bytes(state)
+        shift_rows(state)
+        state = [xor_bytes(state[-1], keys_ready_to_be_xored[9]) for x in range(0, 4)]
+        return from_matrix_to_bytearray(state)
+
+    def decrypt(self):
+        state = self.key_matrix
+        # 0 XOR THE BYTES
+        keys_ready_to_be_xored = [self.key_byte_array]
+
+        for x in range(0, 9):
+            keys_ready_to_be_xored.append(from_matrix_to_bytearray(self.expand_128_key(keys_ready_to_be_xored[x])))
+
+        state = [xor_bytes(state[3 - x], keys_ready_to_be_xored[-1]) for x in range(0, 4)]
+        print_matrix(state)
 
 
-file = AES("../../spec/test_files/secrets.txt", "eric")
+file_array_bytes = bytearray("Two One Nine Two", encoding="utf-8")
+
+file = AES(file_array_bytes, "Thats my Kung Fu")
+
+lol = file.encrypt()
+new_aes = AES(lol, "Thats my Kung Fu")
+new_aes.decrypt()

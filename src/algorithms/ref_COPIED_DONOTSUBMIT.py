@@ -141,14 +141,14 @@ def xor_bytes(a, b):
 
 def inc_bytes(a):
     """ Returns a new byte array with the value increment by 1 """
-    out = list(a)
+    out = a
     for i in reversed(range(len(out))):
         if out[i] == 0xFF:
             out[i] = 0
         else:
             out[i] += 1
             break
-    return bytes(out)
+    return bytearray(out)
 
 
 def pad(plaintext):
