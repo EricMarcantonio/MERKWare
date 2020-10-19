@@ -232,24 +232,19 @@ class AES:
         self.key_matrix = create_matrix(self.key_byte_array)
 
     def g(self, matrix_4: bytearray):
-        # Swap
-        # printf(matrix_4.hex().upper())
-        matrix_4.append(matrix_4.pop(0))
-        # printf(matrix_4.hex().upper())
 
-        # SubBytes
+        matrix_4.append(matrix_4.pop(0))
+
         for x in range(0, 4):
             matrix_4[x] = new_sub(matrix_4[x])
-        # RCON
-        # printf(matrix_4.hex().upper())
 
         matrix_4[0] ^= round_constant[self.rcon_step]
-        # printf(matrix_4.hex().upper())
+
         self.rcon_step += 1
         return matrix_4
 
     def expand_128_key(self, key: bytearray):
-        # print(key.hex().upper())
+
         k = [bytearray() for _ in range(0, 8)]
         k[0] = key[0:4]
         k[1] = key[4:8]
@@ -263,15 +258,15 @@ class AES:
         return k[4::]
 
     def encrypt(self):
+        """
+        :return: returns a byte array of the encrypted bytes
+        """
         state = self.key_matrix
         # 0 XOR THE BYTES
         keys_ready_to_be_xored = [self.key_byte_array]
 
         for x in range(0, 9):
             keys_ready_to_be_xored.append(from_matrix_to_bytearray(self.expand_128_key(keys_ready_to_be_xored[x])))
-
-
-
 
         '''
         • Round 0: 54 68 61 74 73 20 6D 79 20 4B 75 6E 67 20 46 75
@@ -290,7 +285,6 @@ class AES:
 
         '''
 
-
         # # 1
         state = [xor_bytes(state[x], keys_ready_to_be_xored[0]) for x in range(0, 4)]
 
@@ -304,13 +298,10 @@ class AES:
 
         sub_bytes(state)
         shift_rows(state)
-        state = [xor_bytes(state[x], keys_ready_to_be_xored[9]) for x in range(0, 4)]
-        printf(from_matrix_to_bytearray(state).hex())
+        state = [xor_bytes(state[-1], keys_ready_to_be_xored[9]) for x in range(0, 4)]
+        return state
 
-        #           TESTING
-
-
-file_array_bytes = bytearray("Two One Nine Two", encoding="utf-8")
-
-file = AES(file_array_bytes, "Thats my Kung Fu")
-file.encrypt()
+# file_array_bytes = bytearray("Two One Nine Two", encoding="utf-8")
+#
+# file = AES(file_array_bytes, "Thats my Kung Fu")
+# file.encrypt()
