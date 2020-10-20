@@ -34,4 +34,9 @@ else:
     print('Installation complete')
 
 
+    '--clean',
+    '--icon=%s' % os.path.join('resources', 'icon.ico'),
+    os.path.join('src', 'app.py'),
+])
+
 # os.system("pyinstaller -n MERK --onefile src/app.py")

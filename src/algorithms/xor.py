@@ -1,3 +1,4 @@
+
 class Cipher:
     key: str = None
 
