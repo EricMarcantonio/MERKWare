@@ -55,23 +55,44 @@ class RC4:
         self.pseudo_random(plaintext)
 
         # keystream XOR plaintext
-        return [x ^ int(bytes(y.encode())) for x, y in zip(self.keystream, list(plaintext))]
+        try:
+            return [(x ^ int.from_bytes(y, 'big')).to_bytes(1, 'big') for x, y in zip(self.keystream, list(plaintext))]
+        except Exception as E:
+            print("HERE in encrypt", str(E))
+            return [(x ^ int.from_bytes(y.encode(), 'big')).to_bytes(1, 'big') for x, y in
+                    zip(self.keystream, list(plaintext))]
 
     def decrypt(self, cipher):
         self.key_scheduling()
         self.pseudo_random(cipher)
         # return [x ^ y for x, y in zip(self.keystream, list(bytes(cipher.encode())))]
-        return [x ^ int(bytes(y.encode())) for x, y in zip(self.keystream, list(cipher))]
+        try:
+            return [(x ^ int.from_bytes(y.encode(), 'big')).to_bytes(1, 'big') for x, y in zip(self.keystream, list(cipher))]
+        except Exception as E:
+            return [(x ^ int.from_bytes(y, 'big')).to_bytes(1, 'big') for x, y in
+                    zip(self.keystream, list(cipher))]
 
 
 # Testing purposes
 if __name__ == "__main__":
-    rc4 = RC4(key=31415, length=8)
-    cipher = rc4.encrypt(['6', '1', '5', '4'])
-    cipher = list(map(str, cipher))
+    rc4 = RC4(key=31415123234, length=256)
+    cipher = rc4.encrypt([x.encode() for x in "?"])
     print('cipher', cipher)
 
     print('-----------')
 
     text = rc4.decrypt(cipher)
     print('text', text)
+
+    rc4_file = RC4(key=65436543)
+    stream = open('test','rb')
+    plain = stream.read()
+    stream.close()
+    print('check1', plain)
+    cipher = rc4_file.encrypt([x.encode() for x in plain.decode()])
+    print('check2')
+    stream = open('test.encrypted','wb')
+    print(b"".join(cipher))
+    print(rc4_file.decrypt(cipher))
+    stream.write(b"".join(cipher))
+    stream.close()

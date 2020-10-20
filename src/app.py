@@ -1,8 +1,14 @@
-import sys
 from os.path import isdir
 import argparse
 import shutil
-from algorithms.aes import AES
+from .algorithms.aes import AES
+
+# importing algorithms
+from .algorithms.rc4 import RC4
+from .algorithms.blowfish import Blowfish
+from .algorithms.ecc import ECC
+from .algorithms.rsa import RSA
+from .algorithms.xor import XOR
 
 # A boolean that turns on/off debug mode.
 DEBUG = True
