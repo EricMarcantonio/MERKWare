@@ -45,6 +45,7 @@ TODO
 - ```--secrets``` n-tuple input used for key secrets and other parameters
 - ```--action``` encrypt or decrypt
 
+### Example Commands
 
 ### To bypass AV:
 - Pass the execuable `MERK` into 
