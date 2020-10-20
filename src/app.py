@@ -27,12 +27,12 @@ cipher = args_dict['type']
 
 key = 'Test Key' # Parse key from cmdline opts in future PR
 
-from controller import encrypt
+from controller import encrypt, decrypt
 
 if action == 'encrypt':
     encrypt(cipher,folder_path,key) # folder path and key for encryption
 elif action == 'decrypt':
-    pass
+    decrypt(cipher,folder_path,key)
 else:
     pass
 
