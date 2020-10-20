@@ -20,6 +20,7 @@ Available cryptographic algorithms for encryption and decryption.
 To load your own configuration
 - [ ] `merk.config.json`
 - [ ] `auto` mode. Where you run the executable and in encrypts your files in that directory.
+- [ ] Use the `Virus Total` API to automatically test AV bypass
 
 ## Installation
 ### Requirements
