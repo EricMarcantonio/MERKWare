@@ -35,5 +35,4 @@ if action == 'encrypt':
 elif action == 'decrypt':
     decrypt(cipher,folder_path,key)
 else:
-    pass
-
+    print('Invalid Action, choose decrypt or encrypt\n')
