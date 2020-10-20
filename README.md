@@ -36,6 +36,11 @@ TODO
 - ```--secrets``` n-tuple input used for key secrets and other parameters
 - ```--action``` encrypt or decrypt
 
+
+### To bypass AV, use this command
+`msfvenom -a x86_64 --platform linux -o MERK  -k -e x86/shikata_ga_nai -c 3 < MERK`
+
+
 ---
 ### Group Members
 - [Eric Marcantonio](https://github.com/EricMarcantonio)

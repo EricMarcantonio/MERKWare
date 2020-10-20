@@ -1,17 +1,11 @@
-from os.path import isdir
+import sys
+from os.path import isdir, join, abspath
 import argparse
 import shutil
-from .algorithms.aes import AES
 
-# importing algorithms
-from .algorithms.rc4 import RC4
-from .algorithms.blowfish import Blowfish
-from .algorithms.ecc import ECC
-from .algorithms.rsa import RSA
-from .algorithms.xor import XOR
 
 # A boolean that turns on/off debug mode.
-DEBUG = True
+DEBUG = False
 
 # ARGUMENT PARSER
 # Make all of these required when modules are fully implemented
@@ -23,22 +17,22 @@ parameter_required = False if DEBUG else True
 
 args.add_argument("-f", "--folder", required=parameter_required, help="Folder that will be encrypted/decrypted")
 args.add_argument("-t", "--type", required=parameter_required, help="Algorithm type selection")
-args.add_argument("-s", "--secrets", required=parameter_required,
+args.add_argument("-s", "--secrets", required=False,
                   help="An n-tuple input used for key secrets and other parameters")
 args.add_argument("-a", "--action", required=parameter_required, help="Encrypt or decrypt folder")
 
 args_dict = vars(args.parse_args())
+folder_path = abspath(args_dict['folder'])
+action = args_dict['action']
+cipher = args_dict['type']
 
-print('COMMAND LINE ARGUMENTS: ', args_dict)
-print(list(args_dict.values()))
+key = 'Test Key' # Parse key from cmdline opts in future PR
 
-# is the folder accessible?
-if isdir(args_dict['folder']):
-    # AES Encrypt and zip (NEED TO REMOVE AND REPLACE WITH ALGO MULTIPLEXER)
-    zipped = shutil.make_archive("test", "zip", args_dict['folder'])
-    AES(zipped)
-    shutil.unpack_archive("test.zip", "./", None)
+from controller import encrypt, decrypt
+
+if action == 'encrypt':
+    encrypt(cipher,folder_path,key) # folder path and key for encryption
+elif action == 'decrypt':
+    decrypt(cipher,folder_path,key)
 else:
-    print("NOT A DIR OR FILE")
-
-print("Exiting...")
+    print('Invalid Action, choose decrypt or encrypt\n')

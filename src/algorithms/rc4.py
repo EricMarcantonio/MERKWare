@@ -1,7 +1,6 @@
 from typing import List, Any, Union
 
-
-class RC4:
+class Cipher:
     __author__ = "Moreka Kazemi"
     __copyright__ = "Copyright 2020, The MERKware group"
 
@@ -69,13 +68,14 @@ class RC4:
         try:
             return [(x ^ int.from_bytes(y.encode(), 'big')).to_bytes(1, 'big') for x, y in zip(self.keystream, list(cipher))]
         except Exception as E:
+            print(E)
             return [(x ^ int.from_bytes(y, 'big')).to_bytes(1, 'big') for x, y in
                     zip(self.keystream, list(cipher))]
 
 
 # Testing purposes
 if __name__ == "__main__":
-    rc4 = RC4(key=31415123234, length=256)
+    rc4 = Cipher(key=31415123234, length=256)
     cipher = rc4.encrypt([x.encode() for x in "?"])
     print('cipher', cipher)
 
