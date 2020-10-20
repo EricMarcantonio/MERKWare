@@ -1,5 +1,5 @@
 from utils import file_utils
-from algorithms import aes, rc4, xor
+from algorithms import aes, rc4, xor, lib_aes
 
 def encrypt(cipher: str, folder_path : str, key: str):
 
@@ -9,11 +9,11 @@ def encrypt(cipher: str, folder_path : str, key: str):
 
     fileBytes = file_utils.read_file(newZip)
     # returns chosen cipher class
-    algo = mux(cipher).Cipher(bytearray(fileBytes),key)
+    algo = mux(cipher).Cipher(key)
     # Bytes to write to modified file
     if algo:
         # encrypt zipped folder
-        newBytes = bytes(algo.encrypt())
+        newBytes = bytes(algo.encrypt(bytes(fileBytes)))
         # write encrypted bytes and rename zip 
         file_utils.write_file(newZip,newBytes)
         MERKed_file = file_utils.merk(newZip)
@@ -22,7 +22,7 @@ def encrypt(cipher: str, folder_path : str, key: str):
 
 def mux(choice: str):
     algos = {
-        'aes': aes,
+        'aes': lib_aes,
         'xor': xor,
         'rc4': rc4
     }
