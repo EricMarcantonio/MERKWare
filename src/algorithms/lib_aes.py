@@ -21,7 +21,7 @@ def fix_key_length(k: bytes) -> bytes:
         return k[0:32]
 
 
-class AES:
+class Cipher:
     cipher_block: aes.AESCipher = None
     master_key: bytes = None
     bytes_to_crypt: bytes = None

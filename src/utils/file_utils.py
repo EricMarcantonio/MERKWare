@@ -4,116 +4,58 @@ import shutil
 DEBUG = False
 
 def zip_folder(folder_path: str) -> (str, str):
-    print('\nZipping Folder\n')
+    print(f'ZIPPING {folder_path}\n')
     name = os.path.basename(folder_path)
     archive_from = os.path.dirname(folder_path)
     archive_to = os.path.basename(folder_path.strip(os.sep))
     if not DEBUG:
         shutil.make_archive(name,'zip', archive_from, archive_to)
         shutil.move('%s.%s'%(name,'zip'), archive_from)
-    return folder_path, f'{folder_path}.zip'
+        return folder_path, f'{folder_path}.zip'
+    return folder_path, folder_path
 
-def delete_folder(folder_path):
+def unzip_folder(folder_path: str) -> str:
+    if not DEBUG:
+        shutil.unpack_archive(folder_path)
+        shutil.move('%s.%s'%(os.path.basename(folder_path),'zip'), os.path.dirname(folder_path))
+    return folder_path
+
+def delete_folder(folder_path : str) -> None:
     try:
-        print('DELETING',folder_path)
+        print('DELETING Original Folder: ',folder_path,'\n')
         if not DEBUG:
             shutil.rmtree(folder_path)
     except:
         print('ERROR: Folder cannot be deleted or does not exist')
 
+def read_file(file_path : str) -> bytes:
+    print('READING:', file_path,'\n')
+    if not DEBUG:
+        r = open(file_path, "rb")
+        fileBytes = r.read()
+        r.close()
+        return fileBytes
+    return b''
 
+def write_file(file_path : str, bytes_to_write : bytes) -> str:
+    print('WRITING BYTES to', file_path,'\n')
+    if not DEBUG:
+        with open(file_path, 'wb') as f:
+            f.write(bytes_to_write)
+        return file_path
+    return None
 
-def read_file(file_path):
-    r = open(file_path, "rb")
-    fileBytes = r.read()
-    r.close()
-    return fileBytes
-
-# class File:
-#     parent_folder = None
-#     file_path_raw = None
-#     file_name = None
-#     file_read_stream = None
-#     file_write_encrypted = None
-#     file_write_decrypted = None
-#     starting_dir = None
-#     decrypted_file_name = None
-#     encrypted_file_name = None
-
-#     def __init__(self, file_name: str):
-#         if os.path.isfile(file_name):
-#             self.starting_dir = os.getcwd()
-#             self.file_path_raw = os.path.abspath(file_name)
-#             self.file_name = self.file_path_raw[self.file_path_raw.rfind("/") + 1: len(self.file_path_raw)]
-#             self.parent_folder = self.file_path_raw[0:self.file_path_raw.rfind("/")]
-#         else:
-#             raise FileNotFoundError()
-
-#     def read_file(self):
-#         self.file_read_stream = open(self.file_path_raw, "rb")
-#         return self.file_read_stream
-
-#     def encrypted_file_stream(self):
-#         self.encrypted_file_name = self.file_path_raw + '.merk'
-#         self.file_write_encrypted = open(self.file_path_raw + '.merk', "wb")
-#         return self.file_write_encrypted
-
-#     def decrypted_file_stream(self):
-#         self.decrypted_file_name = self.file_path_raw[0:self.file_path_raw.rfind(".")]
-#         self.file_write_decrypted = open(self.file_path_raw[0:self.file_path_raw.rfind(".")], "wb")
-#         return self.file_write_decrypted
-
-#     def delete(self):
-#         os.remove(self.file_path_raw)
-
-#     def unzip_folder(self):
-#         os.chdir(self.parent_folder)
-#         shutil.unpack_archive(filename=self.file_name)
-
-
-# class Folder:
-#     starting_folder = None
-#     parent_folder = None
-#     folder_path_raw = None
-#     folder_name = None
-#     folder_zipped_read_stream = None
-#     folder_zipped_write_encrypted = None
-#     folder_zipped_name = None
-
-#     def __init__(self, folder_name):
-#         if os.path.isdir(folder_name):
-#             self.starting_folder = os.getcwd()
-#             self.folder_path_raw = os.path.abspath(folder_name)
-#             # self.folder_name = self.folder_path_raw[self.folder_path_raw.rfind("/") + 1: len(self.folder_path_raw)]
-#             self.folder_name = self.folder_path_raw
-#             self.parent_folder = self.folder_path_raw[0:self.folder_path_raw.rfind("/")]
-#         else:
-#             raise FileNotFoundError
-
-#     def zip_folder(self):
-#         os.chdir(self.parent_folder)
-#         shutil.make_archive(base_name=self.folder_name, format="zip",
-#                             base_dir=self.folder_name)
-#         os.chdir(self.starting_folder)
-#         return os.getcwd()
-
-#     def delete(self):
-#         shutil.rmtree(self.folder_path_raw)
-
-#     def unzip_folder(self):
-#         os.chdir(self.parent_folder)
-#         shutil.unpack_archive(filename=self.folder_name)
-
-
-# # --------------TESTING-------------------
-# folder = Folder("../../spec/test_files")
-# folder.zip_folder()
-# folder.delete()
-#
-# folder = File("../../spec/test_files.zip")
-# # There are just tests below
-# folder.encrypted_file_stream()
-# folder.delete()
+def merk(file_path : str) -> str:
+    '''
+    Renames target file by adding .merk extension
+    '''
+    print('MERKing',file_path,'\n')
+    if not DEBUG:
+        oldPath = file_path
+        newPath = f'{file_path}.merk'
+        os.rename(oldPath,newPath)
+        return newPath
+    return file_path
 
 '''
 The idea is to zip a folder and then open that folder as a file.

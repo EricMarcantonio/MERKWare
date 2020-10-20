@@ -7,7 +7,7 @@ package_name = 'MERK'
 
 def install():
     PyInstaller.__main__.run([
-        '--log-level=WARN',
+        '--log-level=INFO',
         '--name=%s' % package_name,
         '--onefile',
         '--clean',

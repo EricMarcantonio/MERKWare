@@ -219,7 +219,7 @@ def shift_rows(state):
     state[3] = bytearray([state[3][3], state[3][0], state[3][1], state[3][2]])
 
 
-class AES:
+class Cipher:
     byte_array: list = None
     key_byte_array: bytearray = None
     key_matrix: list = None

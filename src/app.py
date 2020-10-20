@@ -2,10 +2,9 @@ import sys
 from os.path import isdir, join, abspath
 import argparse
 import shutil
-from os import walk, getcwd
 
 # A boolean that turns on/off debug mode.
-DEBUG = True
+DEBUG = False
 
 # ARGUMENT PARSER
 # Make all of these required when modules are fully implemented
@@ -17,23 +16,23 @@ parameter_required = False if DEBUG else True
 
 args.add_argument("-f", "--folder", required=parameter_required, help="Folder that will be encrypted/decrypted")
 args.add_argument("-t", "--type", required=parameter_required, help="Algorithm type selection")
-args.add_argument("-s", "--secrets", required=parameter_required,
+args.add_argument("-s", "--secrets", required=False,
                   help="An n-tuple input used for key secrets and other parameters")
 args.add_argument("-a", "--action", required=parameter_required, help="Encrypt or decrypt folder")
 
 args_dict = vars(args.parse_args())
-
-curr_dir = getcwd()
 folder_path = abspath(args_dict['folder'])
+action = args_dict['action']
+cipher = args_dict['type']
 
-from utils.file_utils import zip_folder, delete_folder, read_file
+key = 'Test Key' # Parse key from cmdline opts in future PR
 
-oldFolder, newZip = (zip_folder(folder_path))
-delete_folder(oldFolder)
-fileBytes = read_file(newZip)
+from controller import encrypt
 
-print(fileBytes)
-
-
-
+if action == 'encrypt':
+    encrypt(cipher,folder_path,key) # folder path and key for encryption
+elif action == 'decrypt':
+    pass
+else:
+    pass
 

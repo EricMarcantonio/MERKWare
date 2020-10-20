@@ -1,7 +1,5 @@
 
-
-
-class XOR:
+class Cipher:
     key: str = None
     byte_array: bytearray = None
 
@@ -12,7 +10,7 @@ class XOR:
         self.key = key
         self.byte_array = byte_array
 
-    def crypt(self) -> bytearray:
+    def encrypt(self) -> bytearray:
         while len(self.key) < len(self.byte_array):
             self.key *= 2
         return self.xor_bytes(self.byte_array, bytearray(self.key, encoding="utf-8"))
