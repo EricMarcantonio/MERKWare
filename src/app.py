@@ -25,7 +25,7 @@ folder_path = abspath(args_dict['folder'])
 action = args_dict['action']
 cipher = args_dict['type']
 
-key = 'Test Key' # Parse key from cmdline opts in future PR
+key = args_dict['secrets']
 
 from controller import encrypt, decrypt
 

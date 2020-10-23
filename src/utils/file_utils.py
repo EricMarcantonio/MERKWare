@@ -10,7 +10,7 @@ def zip_folder(folder_path: str) -> (str, str):
     archive_to = os.path.basename(folder_path.strip(os.sep))
     if not DEBUG:
         shutil.make_archive(name,'zip', archive_from, archive_to)
-        shutil.move('%s.%s'%(name,'zip'), archive_from)
+        # shutil.move('%s'%(name), archive_from)
         return folder_path, f'{folder_path}.zip'
     return folder_path, folder_path
 
