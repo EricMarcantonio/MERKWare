@@ -26,7 +26,7 @@ TODO
 
 ### Build from source
 1. Install requirements
-2. Run ```python install.py```
+2. Run ```python build.py```
 3. Navigate to */dist* to find *MERK* 
 
 ## Usage
