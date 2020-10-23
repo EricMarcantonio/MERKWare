@@ -26,6 +26,7 @@ class Cipher:
             else:
                 raise Exception("I'm gonna go ahead and assume your key won't work")
         except Exception as e:
+            print(e)
 
     def key_scheduling(self):
         self.s = list(range(0, self.length))
