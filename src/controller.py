@@ -16,6 +16,7 @@ def encrypt(cipher: str, folder_path : str, key: str):
         # write encrypted bytes and rename zip 
         file_utils.write_file(newZip,newBytes)
         MERKed_file = file_utils.merk(newZip)
+        print(f"{folder_path} has been MERKed:",MERKed_file)
 
 def decrypt(cipher: str, folder_path : str, key: str):
     clean_file = file_utils.unmerk(folder_path)
@@ -31,6 +32,7 @@ def decrypt(cipher: str, folder_path : str, key: str):
         file_utils.write_file(clean_file,newBytes)
     unzippedFile = file_utils.unzip_folder(clean_file)
     file_utils.delete_file(clean_file)
+    print(f"{clean_file} has been unMERKed")
 
 def mux(choice: str):
     algos = {

@@ -16,7 +16,7 @@ parameter_required = False if DEBUG else True
 
 args.add_argument("-f", "--folder", required=parameter_required, help="Folder that will be encrypted/decrypted")
 args.add_argument("-t", "--type", required=parameter_required, help="Algorithm type selection")
-args.add_argument("-s", "--secrets", required=False,
+args.add_argument("-s", "--secrets", required=parameter_required,
                   help="An n-tuple input used for key secrets and other parameters")
 args.add_argument("-a", "--action", required=parameter_required, help="Encrypt or decrypt folder")
 
