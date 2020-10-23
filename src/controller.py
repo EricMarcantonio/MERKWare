@@ -1,5 +1,5 @@
 from utils import file_utils
-from algorithms import aes, rc4, xor, lib_aes
+from algorithms import aes, lib_aes, rc4, xor
 
 def encrypt(cipher: str, folder_path : str, key: str):
     # Create new zip and delete old folder
