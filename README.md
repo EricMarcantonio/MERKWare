@@ -31,7 +31,7 @@ To load your own configuration
 
 ### Build from source
 1. Install requirements
-2. Run ```python install.py```
+2. Run ```python build.py```
 3. Navigate to */dist* to find *MERK* 
 
 ### Releases
@@ -45,7 +45,9 @@ TODO
 - ```--secrets``` n-tuple input used for key secrets and other parameters
 - ```--action``` encrypt or decrypt
 
+
 ### Example Commands
+
 
 ### To bypass AV:
 - Pass the execuable `MERK` into 
