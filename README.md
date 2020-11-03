@@ -7,27 +7,36 @@
 
 ## Algorithms 
 Available cryptographic algorithms for encryption and decryption.
-### Symmetric
-- XOR
-- AES
-- RC4
-- Blowfish
-### Asymmetric
-- RSA
-- ECC
+
+### Roadmap
+- [x] RC4
+- [x] XOR
+- [x] AES
+- [ ] BLOWFISH
+- [ ] RSA
+- [ ] ECC
+
+### Future Extensions
+To load your own configuration
+- [ ] `merk.config.json`
+- [ ] `auto` mode. Where you run the executable and in encrypts your files in that directory.
+- [ ] Use the `Virus Total` API to automatically test AV bypass
 
 ## Installation
 ### Requirements
 - Python 3.7+
+- Conda Environment
+- ```conda install pip```
 - ```pip install -r requirements.txt```
-
-### Releases
-TODO
 
 ### Build from source
 1. Install requirements
 2. Run ```python build.py```
 3. Navigate to */dist* to find *MERK* 
+
+### Releases
+TODO
+
 
 ## Usage
 ### Command-line Flags
@@ -36,10 +45,12 @@ TODO
 - ```--secrets``` n-tuple input used for key secrets and other parameters
 - ```--action``` encrypt or decrypt
 
-Look at USAGE.md for example uses
+
+### Example Commands
 
 
-### To bypass AV, use this command
+### To bypass AV:
+- Pass the execuable `MERK` into 
 `msfvenom -a x86_64 --platform linux -o MERK  -k -e x86/shikata_ga_nai -c 3 < MERK`
 
 
