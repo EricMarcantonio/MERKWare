@@ -4,15 +4,8 @@ from Crypto.Cipher import AES
 import hashlib, secrets, binascii
 
 
-class Cipher:
-    def __init__(self, key=secrets.randbelow(0xA9FB57DBA1EEA9BC3E660A909D838D718C397AA3B561A6F7901E0E82974856A7),
-                 curve="brainpoolP256r1"):
-        key_limit = 0xA9FB57DBA1EEA9BC3E660A909D838D718C397AA3B561A6F7901E0E82974856A7
-        if key < key_limit:
-            self.key = key
-        else:
-            raise Exception("The key must be less than {}".format(key_limit))
-
+class ECC:
+    def __init__(self, curve="brainpoolP256r1"):
         curve_options = ["brainpoolP160r1",
                          "brainpoolP192r1",
                          "brainpoolP224r1",
@@ -58,11 +51,11 @@ class Cipher:
 
 
 if __name__ == "__main__":
-    ecc = ECC(0xA9FB57DBA1EEA9BC3E660A909D838D718C397AA3B561A6F7901E0E82974856A6)
+    ecc = ECC()
 
     msg = b'This is a test'
     print("original msg:", msg)
-    privateKey = secrets.randbelow(0xA9FB57DBA1EEA9BC3E660A909D838D718C397AA3B561A6F7901E0E82974856A7)
+    privateKey = secrets.randbelow(0x321)
     publicKey = ecc.get_public_key(privateKey)
 
     ciphertext, nonce, authTag, ciphertextPubKey = ecc.encrypt(msg, publicKey)
