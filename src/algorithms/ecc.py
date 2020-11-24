@@ -5,7 +5,6 @@ import hashlib, secrets, binascii
 
 class ECC:
     def __init__(self, curve="brainpoolP256r1"):
-
         curve_options = ["brainpoolP160r1",
                          "brainpoolP192r1",
                          "brainpoolP224r1",
