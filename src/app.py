@@ -42,7 +42,7 @@ if (isDirectory or '.zip' in fpath):
     else:
         print('Invalid Action, choose decrypt or encrypt\n')
 
-if (isFile):
+elif (isFile):
     if action == 'encrypt':
         encrypt_file(cipher,fpath,key) # folder path and key for encryption
     elif action == 'decrypt':
