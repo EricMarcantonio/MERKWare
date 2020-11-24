@@ -1,8 +1,8 @@
 import os
 import ast
 
-from Cryptodome.PublicKey import RSA
-from Cryptodome.Cipher import PKCS1_OAEP
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 
 
 def encrypt(byte_array: bytes, key_name: str) -> bytes:

@@ -1,5 +1,5 @@
 from utils import file_utils
-from algorithms import aes, lib_aes, rc4, xor
+from algorithms import aes, rc4, xor, rsa
 
 def encrypt_file(cipher: str, file_path : str, key: str):
 
@@ -64,9 +64,10 @@ def decrypt_folder(cipher: str, folder_path : str, key: str):
 
 def mux(choice: str):
     algos = {
-        'aes': lib_aes,
+        'aes': aes,
         'xor': xor,
-        'rc4': rc4
+        'rc4': rc4,
+        'rsa': rsa
     }
     if choice in algos.keys():
         return algos[choice]
