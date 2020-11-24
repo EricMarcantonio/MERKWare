@@ -1,7 +1,6 @@
 from typing import List, Any, Union
 
-
-class RC4:
+class Cipher:
     __author__ = "Moreka Kazemi"
     __copyright__ = "Copyright 2020, The MERKware group"
 
@@ -33,7 +32,9 @@ class RC4:
         self.s = list(range(0, self.length))
         j = 0
         for i in range(0, self.length):
+            i = i % self.length
             j = (j + self.s[i] + self.key[i]) % self.length
+
             self.s[i], self.s[j] = self.s[j], self.s[i]
 
         print(self.s)
@@ -43,8 +44,11 @@ class RC4:
         j = 0
         self.keystream = []
         for i in range(1, len(text) + 1):
+            i = i % self.length
             j = (j + self.s[i]) % self.length
+
             self.s[i], self.s[j] = self.s[j], self.s[i]
+
             t = (self.s[i] + self.s[j]) % self.length
             self.keystream.append(self.s[t])
 
@@ -58,7 +62,6 @@ class RC4:
         try:
             return [(x ^ int.from_bytes(y, 'big')).to_bytes(1, 'big') for x, y in zip(self.keystream, list(plaintext))]
         except Exception as E:
-            print("HERE in encrypt", str(E))
             return [(x ^ int.from_bytes(y.encode(), 'big')).to_bytes(1, 'big') for x, y in
                     zip(self.keystream, list(plaintext))]
 
@@ -75,8 +78,8 @@ class RC4:
 
 # Testing purposes
 if __name__ == "__main__":
-    rc4 = RC4(key=31415123234, length=256)
-    cipher = rc4.encrypt([x.encode() for x in "?"])
+    rc4 = Cipher(key='31415123234', length=3)
+    cipher = rc4.encrypt([x.encode() for x in "this is a test"])
     print('cipher', cipher)
 
     print('-----------')
