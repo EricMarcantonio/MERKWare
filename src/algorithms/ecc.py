@@ -1,9 +1,10 @@
+
 from tinyec import registry
 from Crypto.Cipher import AES
 import hashlib, secrets, binascii
 
 
-class ECC:
+class Cipher:
     def __init__(self, key=secrets.randbelow(0xA9FB57DBA1EEA9BC3E660A909D838D718C397AA3B561A6F7901E0E82974856A7),
                  curve="brainpoolP256r1"):
         key_limit = 0xA9FB57DBA1EEA9BC3E660A909D838D718C397AA3B561A6F7901E0E82974856A7
@@ -69,3 +70,4 @@ if __name__ == "__main__":
 
     decryptedMsg = ecc.decrypt(ciphertext, nonce, authTag, ciphertextPubKey, privateKey)
     print("decrypted msg:", decryptedMsg)
+
