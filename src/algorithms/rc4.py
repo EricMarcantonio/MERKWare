@@ -26,7 +26,7 @@ class Cipher:
             else:
                 raise Exception("I'm gonna go ahead and assume your key won't work")
         except Exception as e:
-            print("Key is not acceptable:", str(e))
+            print(e)
 
     def key_scheduling(self):
         self.s = list(range(0, self.length))
@@ -37,8 +37,7 @@ class Cipher:
 
             self.s[i], self.s[j] = self.s[j], self.s[i]
 
-        print(self.s)
-        print(self.key)
+
 
     def pseudo_random(self, text):
         j = 0
@@ -52,7 +51,6 @@ class Cipher:
             t = (self.s[i] + self.s[j]) % self.length
             self.keystream.append(self.s[t])
 
-        print('keystream', self.keystream)
 
     def encrypt(self, plaintext):
         self.key_scheduling()
@@ -60,7 +58,7 @@ class Cipher:
 
         # keystream XOR plaintext
         try:
-            return [(x ^ int.from_bytes(y, 'big')).to_bytes(1, 'big') for x, y in zip(self.keystream, list(plaintext))]
+            return [x ^ int(y) for x, y in zip(self.keystream, list(plaintext))]
         except Exception as E:
             return [(x ^ int.from_bytes(y.encode(), 'big')).to_bytes(1, 'big') for x, y in
                     zip(self.keystream, list(plaintext))]
@@ -70,7 +68,7 @@ class Cipher:
         self.pseudo_random(cipher)
         # return [x ^ y for x, y in zip(self.keystream, list(bytes(cipher.encode())))]
         try:
-            return [(x ^ int.from_bytes(y.encode(), 'big')).to_bytes(1, 'big') for x, y in zip(self.keystream, list(cipher))]
+            return [x ^ int(y) for x, y in zip(self.keystream, list(cipher))]
         except Exception as E:
             return [(x ^ int.from_bytes(y, 'big')).to_bytes(1, 'big') for x, y in
                     zip(self.keystream, list(cipher))]
@@ -79,7 +77,9 @@ class Cipher:
 # Testing purposes
 if __name__ == "__main__":
     rc4 = Cipher(key='31415123234', length=3)
+
     cipher = rc4.encrypt([x.encode() for x in "this is a test"])
+
     print('cipher', cipher)
 
     print('-----------')

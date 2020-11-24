@@ -1,3 +1,4 @@
+
 from tinyec import registry
 from Crypto.Cipher import AES
 import hashlib, secrets, binascii
@@ -62,3 +63,4 @@ if __name__ == "__main__":
 
     decryptedMsg = ecc.decrypt(ciphertext, nonce, authTag, ciphertextPubKey, privateKey)
     print("decrypted msg:", decryptedMsg)
+

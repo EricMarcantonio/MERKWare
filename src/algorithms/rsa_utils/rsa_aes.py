@@ -25,8 +25,8 @@ def fix_key_length(k: bytes) -> bytes:
 class Cipher:
     cipher_block = None
     
-    def __init__(self, master_key: str):
-        message = fix_key_length(bytes(master_key,encoding='utf8'))
+    def __init__(self, master_key: bytes):
+        message = fix_key_length(master_key)
         self.cipher_block = aes.new(bytearray(message), aes.MODE_CFB, bytes("This is an IV456",encoding='utf8'))
 
     def encrypt(self,cipher_bytes) -> bytes:

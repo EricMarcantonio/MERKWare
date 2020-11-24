@@ -1,4 +1,7 @@
 /build
 /dist
-*.spec
+MERK.spec
 .vscode
+*__pycache__
+Pipfile*
+*.pem
