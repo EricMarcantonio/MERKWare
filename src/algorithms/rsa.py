@@ -12,27 +12,28 @@ class Cipher:
 
     def __init__(self, key_name: str):
         self.key_name = key_name
-        self.generate_key_pair(4096)
 
     def encrypt(self,cipher_bytes: bytes) -> bytes:
+        self.generate_key_pair(4096)
         self.gen_random_bytes()
-        print(self.rand_bytes)
         cipher = rsa_aes.Cipher(self.rand_bytes)
         
         encryptedFile =  cipher.encrypt(cipher_bytes)
-
-        result = bytearray(encryptedFile)
-        result.append(self.encryption_tail())
+        tail = self.encryption_tail()
+        result = encryptedFile + tail
+        
         return result
 
     def decrypt(self,cipher_bytes: bytes) -> bytes:
-        tail = cipher_bytes[-256:]
-        cipherBytes = cipher_bytes[:-256]
+        tail = cipher_bytes[-512:] # take last 256 char tail
+        cipherBytes = cipher_bytes[:-512] # the actual ciphertext
 
         key = self.decrypt_tail(tail) 
+
         cipher = rsa_aes.Cipher(key)
         
-        result = cipher.encrypt(cipherBytes)
+        result = cipher.decrypt(cipherBytes)
+
         return result
 
 
@@ -51,8 +52,8 @@ class Cipher:
         private_key = open(self.key_name + ".pem", "rb")
         priv = RSA.importKey(private_key.read())
         private_key.close()
-
         decryptor = PKCS1_OAEP.new(priv)
+        len(byte_array)
         decrypted = decryptor.decrypt(byte_array)
 
         return decrypted

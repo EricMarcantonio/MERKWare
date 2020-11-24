@@ -9,6 +9,7 @@ def encrypt_file(cipher: str, file_path : str, key: str):
     # Bytes to write to modified file
     if algo:
         # encrypt zipped folder
+        print("ENCRYPTING FILE BYTES",'\n')
         newBytes = bytes(algo.encrypt(bytes(fileBytes)))
         # write encrypted bytes and rename zip 
         file_utils.write_file(file_path,newBytes)
@@ -24,6 +25,7 @@ def decrypt_file(cipher: str, file_path : str, key: str):
     # Bytes to write to modified file
     if algo:
         # decrypt zipped folder
+        print("DECRYPTING FILE BYTES",'\n')
         newBytes = bytes(algo.decrypt(bytes(fileBytes)))
         # write encrypted bytes and rename zip 
         file_utils.write_file(clean_file,newBytes)
