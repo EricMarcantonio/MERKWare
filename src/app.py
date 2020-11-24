@@ -88,3 +88,5 @@ elif (isFile):
         decrypt_file(cipher,fpath,key)
     else:
         print('Invalid Action, choose decrypt or encrypt\n')
+else:
+    print("Invalid or missing file...")
