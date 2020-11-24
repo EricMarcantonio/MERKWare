@@ -27,7 +27,7 @@ args_dict = vars(args.parse_args())
 fpath = None
 action = None
 cipher = None
-key = None
+key = ""
 
 import os
 import json

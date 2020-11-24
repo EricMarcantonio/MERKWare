@@ -77,7 +77,9 @@ class Cipher:
 # Testing purposes
 if __name__ == "__main__":
     rc4 = Cipher(key='31415123234', length=3)
-    cipher = rc4.encrypt([x.encode() for x in "?"])
+
+    cipher = rc4.encrypt([x.encode() for x in "this is a test"])
+
     print('cipher', cipher)
 
     print('-----------')
