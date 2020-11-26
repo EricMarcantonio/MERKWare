@@ -17,7 +17,7 @@ Get the latest release [here](https://github.com/EricMarcantonio/EECS3481-Projec
 ### Build from source
 1. Install requirements
 2. Run ```python build.py```
-3. Navigate to */dist* to find `MERK.exe `
+3. Navigate to newly generated `/dist` to find `MERK.exe `
 
 ## Usage
 See [USAGE.md](https://github.com/EricMarcantonio/EECS3481-Project/blob/master/USAGE.md) for more detailed documentation
