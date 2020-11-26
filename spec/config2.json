@@ -1,6 +1,0 @@
-{
-    "folder": "../spec/test_folder.zip.merk",
-    "action": "decrypt",
-    "type": "rsa",
-    "secrets": "test"
-}
