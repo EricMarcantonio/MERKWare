@@ -4,7 +4,7 @@ import argparse
 import shutil
 
 # A boolean that turns on/off debug mode.
-DEBUG = False
+DEBUG = True #TODO There is no catch for not adding any args
 
 # ARGUMENT PARSER
 # Make all of these required when modules are fully implemented
