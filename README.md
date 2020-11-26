@@ -12,17 +12,19 @@ Available cryptographic algorithms for encryption and decryption.
 - [x] RC4
 - [x] XOR
 - [x] AES
-- [ ] BLOWFISH
-- [ ] RSA
-- [ ] ECC
+- [ ] BLOWFISH (coming soon...)
+- [x] RSA
+- [x] ECC
 
 ### Future Extensions
 To load your own configuration
-- [ ] `merk.config.json`
+- [x] `merk.config.json`
 - [ ] `auto` mode. Where you run the executable and in encrypts your files in that directory.
 - [ ] Use the `Virus Total` API to automatically test AV bypass
 
 ## Installation
+### Download latest executable (Windows only)
+Get the latest release [here](https://github.com/EricMarcantonio/EECS3481-Project/releases)
 ### Requirements
 - Python 3.7+
 - Conda Environment
@@ -32,18 +34,14 @@ To load your own configuration
 ### Build from source
 1. Install requirements
 2. Run ```python build.py```
-3. Navigate to */dist* to find *MERK* 
-
-### Releases
-TODO
-
+3. Navigate to */dist* to find `MERK.exe `
 
 ## Usage
 ### Command-line Flags
-- ```--folder``` The folder that will be encrypted
-- ```--type``` algorithm type selection 
-- ```--secrets``` n-tuple input used for key secrets and other parameters
-- ```--action``` encrypt or decrypt
+- ```--folder``` `-f` The folder that will be encrypted
+- ```--type``` `-t` algorithm type selection 
+- ```--secrets``` `-s` n-tuple input used for key secrets and other parameters
+- ```--action``` `-a` encrypt or decrypt
 
 
 ### Example Commands
