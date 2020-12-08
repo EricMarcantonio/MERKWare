@@ -78,7 +78,6 @@ class Cipher:
         nonce = bytes.fromhex(keyDetails['nonce'])
         authTag = bytes.fromhex(keyDetails['authTag'])
 
-        print(nonce)
 
         ciphertextPubKey = ec.Point(self.curve, keyDetails['x'], keyDetails['y'])
         privateKey = int(keyDetails['privateKey'])
