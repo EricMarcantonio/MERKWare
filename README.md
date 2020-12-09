@@ -47,11 +47,6 @@ To load your own configuration
 - [ ] Use the `Virus Total` API to automatically test AV bypass
 
 
-### To bypass AV:
-- Pass the execuable `MERK` into 
-`msfvenom -a x86_64 --platform linux -o MERK  -k -e x86/shikata_ga_nai -c 3 < MERK`
-
-
 ---
 ### Group Members
 - [Eric Marcantonio](https://github.com/EricMarcantonio)
